@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  
+  mongo:
+    image: mongo:5
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app-network
+
+  userservice:
+    build: ./userservice
+    container_name: userservice
+    ports:
+      - "5001:5001"
+    depends_on:
+      mongo:
+        condition: service_started
+    environment:
+      - PORT=5001
+      - MONGO_USER_URI=mongodb://mongo:27017/taskmanagement
+    command: ["node", "src/index.js"]
+    networks:
+      - app-network
+
+  taskservice:
+    build: ./taskservice
+    container_name: taskservice
+    ports:
+      - "5002:5002"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    environment:
+      - PORT=5002
+      - MONGO_URI=mongodb://mongo:27017/taskmanagement
+      - RABBITMQ_URI=amqp://rabbitmq
+    command: ["node", "src/index.js"]
+    networks:
+      - app-network
+
+  notificationservice:
+    build: ./notificationservice
+    container_name: notificationservice
+    ports:
+      - "5003:5003"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  rabbitmq_data:
