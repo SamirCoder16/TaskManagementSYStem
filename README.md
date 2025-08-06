@@ -1,9 +1,5 @@
 <h1 align="center">📦 Task Management Microservices Architecture</h1>
 
-<p align="center">
-  <img src="./taskmanagement.jpg" alt="Architecture Diagram" width="700"/>
-</p>
-
 ---
 
 <h2>🔧 Tech Stack</h2>
@@ -63,7 +59,49 @@ This project is a microservices-based task management system where different ser
 
 ---
 
-<h2>🚀 How to Run (in Dev)</h2>
+<h2>🚀 How to Run the Application</h2>
+
+<p>Follow these steps to run the complete microservices system locally using Docker:</p>
+
+<ol>
+  <li><strong>✅ Step 1: Make sure Docker is installed and Docker Daemon is running</strong>
+    <ul>
+      <li>Download and install Docker from the official site: <a href="https://www.docker.com/products/docker-desktop/" target="_blank">https://www.docker.com/products/docker-desktop/</a></li>
+      <li>Start Docker Desktop and wait until the Docker daemon is running.</li>
+    </ul>
+  </li>
+
+  <li><strong>📥 Step 2: Clone the Repository</strong>
+    <pre><code>git clone https://github.com/your-username/your-repo-name.git
+cd your-repo-name</code></pre>
+  </li>
+
+  <li><strong>🐳 Step 3: Run Docker Compose in Detached Mode</strong>
+    <pre><code>docker-compose up --build -d</code></pre>
+    <p>This will:</p>
+    <ul>
+      <li>Build all Docker images for each service (User, Task, Notification)</li>
+      <li>Start the services and MongoDB + RabbitMQ containers</li>
+      <li>Run in detached mode (background)</li>
+    </ul>
+  </li>
+
+  <li><strong>📦 Step 4: Check Running Containers</strong>
+    <pre><code>docker ps</code></pre>
+    <p>This will show all active containers. Make sure all services are up and healthy.</p>
+  </li>
+
+  <li><strong>🧪 Step 5: Test APIs using Postman</strong>
+    <ul>
+      <li>You can now send requests to your <strong>User</strong> or <strong>Task</strong> service.</li>
+      <li>Task events will automatically be pushed to RabbitMQ and consumed by the <strong>Notification</strong> service.</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>✅ Tip:</strong> If you make code changes and want to restart, first stop all containers using:</p>
+<pre><code>docker-compose down</code></pre>
+
 
 ```bash
 # Start all services using Docker
